@@ -1,4 +1,5 @@
 const customerController = require('../controller/customerController')
+const {validateToken} = require("../controller/userController")
 const customer = (app) =>{
     app.get('/api/customer/getCustomer',customerController.getCustomers)
     app.get('/api/customer/getCustomer/:id',customerController.getCustomer)
