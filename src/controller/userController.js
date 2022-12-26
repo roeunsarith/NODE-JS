@@ -17,7 +17,7 @@ const validateToken = (req,res,next) => {
                 //     message: "Incorrect token",
                 //     user : objectInof.user
                 // })
-                req.user = objectInof.user;
+                req.user = objectInof;
                 next();
 
             }else{
@@ -108,7 +108,7 @@ const save = (req,res)=>{
     })
 }
 
-const login = (req,res) => {
+const login = (req,res,next) => {
     var body = req.body;
     var message = {};
     if(body.username == "" || body.username == null){
@@ -142,6 +142,8 @@ const login = (req,res) => {
                         access_token : access_token,
                         refresh_token : refresh_token
                     })
+                    req.user = user;
+                    next();
                 }else{
                     res.json({
                         error : true,

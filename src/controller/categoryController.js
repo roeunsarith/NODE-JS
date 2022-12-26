@@ -4,7 +4,14 @@ const db = require('../config/db')
 const getCategorys = (req,res)=>{
     // res.send("getCustomer");
     var body = req.body;
-    var sql = "select * from tb_category"
+    var sql = " SELECT c.category_id, c.parent_id, c.image,cd1.name as name1 , cd2.name as name2, cd3.name as name3 \n" +
+    "FROM tb_category c \n " +
+    "left join tb_category c1 on (c.parent_id = c1.category_id) \n" +
+    "left join tb_category c2 on (c1.parent_id = c2.category_id) \n" +
+    "left join tb_category_description cd1 on (c.category_id = cd1.category_id) \n" +
+    "left join tb_category_description cd2 on (c1.category_id = cd2.category_id) \n" +
+    "left join tb_category_description cd3 on (c2.category_id = cd3.category_id) \n" +
+    "GROUP BY c.category_id order by cd1.name asc "       
     if(body.name && body.name!=0 && body.name !=null){
         sql += " where name like concat('%',?,'%')"
     }
@@ -21,10 +28,13 @@ const getCategorys = (req,res)=>{
         }
     })
 }
-const getCategory = (req,res)=>{
-    var body =  parseInt(req.params.id);
-    var sql = "select * from tb_category where Category_id = ?"
-    db.query(sql,[body],(err,result)=>{
+const CategoryInfo = (req,res)=>{
+    var body = req.body;
+    var sql = "SELECT c.category_id, c.parent_id, c.created_at, c.created_by , c.image, cd.name , c.status \n" + 
+            "from tb_category c \n" +
+            "left join tb_category_description cd on (c.category_id = cd.category_id) \n" + 
+            "where c.category_id = ?"
+    db.query(sql,[body.category_id],(err,result)=>{
         if(!err){
             res.json({
                 result 
@@ -119,8 +129,8 @@ const validateAdd =(message,body)=>{
 }
 
 module.exports = {
-    getCategory,
     getCategorys,
+    CategoryInfo,
     addCategory,
     updateCategory,
     deleteCategory

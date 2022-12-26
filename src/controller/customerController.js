@@ -3,6 +3,8 @@ const db = require('../config/db')
 
 getCustomers = (req,res)=>{
     // res.send("getCustomer");
+    var user = req.user;
+    console.log(user);
     db.query("select * from tb_customer",(err,result)=>{
         if(!err){
             res.json({
@@ -35,6 +37,8 @@ getCustomer = (req,res)=>{
 addCustomer = (req,res)=>{
     var body = req.body;
     var message = {};
+    var user = req.user;
+    console.log(user);
     validateAdd(message,body);
     if(Object.keys(message).length>0){
         res.json({
